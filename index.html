@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mes Tutos</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg">
+<meta name="theme-color" content="#2f855a">
+<style>
+[data-theme=light]{--bg:#f6f7f9;--pn:#fff;--tx:#1d2330;--mu:#6b7280;--bd:#dfe3ea}
+[data-theme=dark]{--bg:#12151c;--pn:#1b2029;--tx:#e6e9ef;--mu:#9aa3b2;--bd:#2c3340}
+[data-theme=sepia]{--bg:#efe6d2;--pn:#f8f1e0;--tx:#43382a;--mu:#8a7a62;--bd:#d9ccb0}
+[data-theme=cactus]{--bg:#e6f2e9;--pn:#f5fbf6;--tx:#1b3a2a;--mu:#5d8069;--bd:#c3dccb}
+[data-theme=ocean]{--bg:#0e2233;--pn:#143049;--tx:#e3f1fb;--mu:#8fb4cf;--bd:#244b6b}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font:calc(16px*var(--fs,1))/1.6 system-ui,sans-serif;background:var(--bg);color:var(--tx);display:flex;--ac:#2f855a}
+button,select,input{font:inherit;color:var(--tx)}
+button,select{background:var(--pn);border:1px solid var(--bd);border-radius:8px;padding:6px 10px;cursor:pointer}
+button:hover{border-color:var(--ac)}
+.pri{background:var(--ac);color:#fff;border-color:var(--ac)}
+#side{width:300px;background:var(--pn);border-right:1px solid var(--bd);display:flex;flex-direction:column;padding:12px;gap:8px;flex:none}
+#q{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg)}
+#list{overflow:auto;flex:1}
+.it{padding:8px 10px;border-radius:8px;cursor:pointer}
+.it:hover,.it.on{background:var(--bg)}
+.it b{display:block}.it small{color:var(--mu)}
+mark{background:#ffe14d;color:#000;border-radius:3px}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+#main{flex:1;min-width:0;display:flex;flex-direction:column}
+#top{display:flex;gap:6px;padding:8px 12px;align-items:center;background:var(--pn);border-bottom:1px solid var(--bd);flex-wrap:wrap}
+#menu{display:none}
+#bar{display:none;gap:5px;padding:6px 12px;background:var(--pn);border-bottom:1px solid var(--bd);overflow-x:auto;white-space:nowrap;align-items:center}
+.editing #bar{display:flex}
+#bar>*{flex:none}
+#bar input[type=color]{width:34px;height:32px;padding:0;border:1px solid var(--bd);border-radius:8px;background:none}
+#ob{display:none;gap:6px;padding:6px 12px;background:var(--bg);border-bottom:1px solid var(--bd);overflow-x:auto;white-space:nowrap;align-items:center}
+#scroll{flex:1;overflow:auto;padding:18px}
+#page{max-width:860px;margin:auto;background:var(--pn);border:1px solid var(--bd);border-radius:14px;padding:24px 28px;min-height:70%}
+#title{width:100%;font-size:1.9em;font-weight:700;border:0;background:none;outline:none}
+#tags{width:100%;border:0;background:none;outline:none;color:var(--mu);margin-bottom:10px}
+#ed{outline:none;min-height:50vh;word-wrap:break-word}
+#ed img,#ed video,#ed svg,#ed iframe{max-width:100%;display:block}
+#ed a{color:var(--ac)}
+#ed table{border-collapse:collapse;width:100%}
+#ed td{border:1px solid var(--bd);padding:6px 8px;min-width:40px}
+#ed blockquote{border-left:4px solid var(--ac);margin:1em 0;padding:2px 14px;color:var(--mu)}
+#ed pre{background:#0d1117;color:#e6edf3;padding:12px;border-radius:8px;overflow:auto}
+#ed hr{border:0;border-top:2px solid var(--bd);margin:1.4em 0}
+.callout{padding:10px 14px;border-radius:10px;border-left:5px solid;margin:1em 0}
+.callout.info{background:#3b82f622;border-color:#3b82f6}.callout.warn{background:#f59e0b22;border-color:#f59e0b}.callout.ok{background:#22c55e22;border-color:#22c55e}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:1em 0}
+.cols>div{border:1px dashed var(--bd);padding:6px 10px;border-radius:8px;min-height:3em}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+ul.check{list-style:none;padding-left:4px}
+.obj{margin:1em auto;width:60%;max-width:100%}
+.obj[data-al=l]{margin-left:0}.obj[data-al=r]{margin-right:0;margin-left:auto}
+.obj[data-al=fl]{float:left;margin:4px 16px 8px 0}.obj[data-al=fr]{float:right;margin:4px 0 8px 16px}
+.obj .v{position:relative;padding-top:56.25%}.obj .v iframe,.obj .v video{position:absolute;inset:0;width:100%;height:100%}
+.editing .obj{outline:1px dashed transparent}.editing .obj:hover{outline-color:var(--ac)}
+.editing .obj.sel{outline:2px solid var(--ac)}
+.editing .obj iframe,.editing .obj video{pointer-events:none}
+#st{color:var(--mu);font-size:.85em;margin-left:auto}
+dialog{border:1px solid var(--bd);border-radius:14px;background:var(--pn);color:var(--tx);max-width:420px;width:92%}
+.th button{margin:3px}
+@media(max-width:800px){
+#side{position:fixed;inset:0 25% 0 0;z-index:9;transform:translateX(-102%);transition:.2s;width:auto;box-shadow:0 0 30px #0006}
+#side.open{transform:none}#menu{display:inline-block}#page{padding:16px}
+}
+@media print{#side,#top,#bar,#ob{display:none!important}#scroll{padding:0}#page{border:0}}
+</style>
+</head>
+<body data-theme="light">
+<aside id="side">
+  <input id="q" type="search" placeholder="🔍 Rechercher dans mes tutos… (Ctrl+K)">
+  <div class="row"><button class="pri" id="new">＋ Nouvelle page</button><button id="cfg">🎨 Thèmes</button><button id="bk">💾 Sauvegarde</button></div>
+  <div id="list"></div>
+</aside>
+<div id="main">
+  <div id="top">
+    <button id="menu">☰</button>
+    <button id="mode" class="pri">✏️ Modifier</button>
+    <button id="exp">⬇ HTML</button><button id="prt">🖨 PDF</button><button id="del">🗑</button>
+    <span id="st"></span>
+  </div>
+  <div id="bar"></div>
+  <div id="ob"></div>
+  <div id="scroll"><div id="page">
+    <input id="title" placeholder="Titre de la page">
+    <input id="tags" placeholder="Tags séparés par des virgules (ex: linux, cuisine)">
+    <div id="ed"></div>
+  </div></div>
+</div>
+<input type="file" id="imp" accept=".json" hidden>
+<dialog id="dlg"><div id="dc"></div><p><button onclick="dlg.close()">Fermer</button></p></dialog>
+<script>
+const $=s=>document.querySelector(s),E=$('#ed'),dlg=$('#dlg');
+let db,pages=[],cur=null,edit=false,rng=null,obj=null,tm;
+const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const rq=r=>new Promise((o,e)=>{r.onsuccess=()=>o(r.result);r.onerror=()=>e(r.error)});
+const st=()=>db.transaction('pages','readwrite').objectStore('pages');
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- Thème ---------- */
+const S=JSON.parse(localStorage.getItem('tutos-cfg')||'{"t":"light","a":"#2f855a","f":1}');
+function applyCfg(){document.body.dataset.theme=S.t;document.body.style.setProperty('--ac',S.a);document.body.style.setProperty('--fs',S.f);localStorage.setItem('tutos-cfg',JSON.stringify(S))}
+$('#cfg').onclick=()=>{$('#dc').innerHTML='<h3>Apparence</h3><div class="th">'+['light','dark','sepia','cactus','ocean'].map(t=>`<button onclick="S.t='${t}';applyCfg()">${t}</button>`).join('')+'</div><p>Couleur d\'accent <input type="color" value="'+S.a+'" oninput="S.a=this.value;applyCfg()"></p><p>Taille du texte <input type="range" min=".8" max="1.5" step=".05" value="'+S.f+'" oninput="S.f=this.value;applyCfg()"></p>';dlg.showModal()};
+
+/* ---------- Données ---------- */
+async function init(){
+  applyCfg();
+  db=await rq(Object.assign(indexedDB.open('mes-tutos',1),{onupgradeneeded(e){e.target.result.createObjectStore('pages',{keyPath:'id'})}}));
+  pages=await rq(st().getAll());
+  const last=localStorage.getItem('tutos-last');
+  list();
+  if(pages.find(p=>p.id==last))open(last,false);else if(!pages.length)newPage();
+}
+function newPage(){
+  const p={id:'p'+Date.now(),title:'',tags:[],html:'<p><br></p>',text:'',updated:Date.now()};
+  pages.push(p);open(p.id,true);$('#title').focus();
+}
+function open(id,ed){
+  save();cur=pages.find(p=>p.id==id);if(!cur)return;
+  localStorage.setItem('tutos-last',id);
+  $('#title').value=cur.title;$('#tags').value=cur.tags.join(', ');E.innerHTML=cur.html;
+  setEdit(ed);$('#side').classList.remove('open');unsel();list();$('#scroll').scrollTop=0;
+}
+function save(){
+  if(!cur)return;clearTimeout(tm);
+  E.querySelectorAll('.sel').forEach(x=>x.classList.remove('sel'));
+  E.querySelectorAll('a').forEach(a=>{a.target='_blank';a.rel='noopener'});
+  cur.html=E.innerHTML;cur.text=E.innerText;cur.title=$('#title').value.trim();
+  cur.tags=$('#tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  cur.updated=Date.now();
+  if(obj)obj.classList.add('sel');
+  st().put(cur);$('#st').textContent='Enregistré ✓';
+}
+function chg(){$('#st').textContent='…';clearTimeout(tm);tm=setTimeout(()=>{save();list()},600)}
+['#title','#tags'].forEach(s=>$(s).addEventListener('input',chg));
+E.addEventListener('input',chg);
+E.addEventListener('change',e=>{if(e.target.type=='checkbox'){e.target.toggleAttribute('checked',e.target.checked);chg()}});
+
+/* ---------- Recherche ---------- */
+function list(){
+  const q=norm($('#q').value).trim(),terms=q.split(/\s+/).filter(Boolean);let rows;
+  if(!terms.length)rows=[...pages].sort((a,b)=>b.updated-a.updated).map(p=>({p}));
+  else rows=pages.map(p=>{
+    const t=norm(p.title),g=norm(p.tags.join(' ')),x=norm(p.text),all=t+' '+g+' '+x;
+    if(!terms.every(w=>all.includes(w)))return null;
+    let sc=0,i=-1;terms.forEach(w=>{if(t.includes(w))sc+=10;if(g.includes(w))sc+=5;sc+=x.split(w).length-1;if(i<0)i=x.indexOf(w)});
+    const sn=i>=0?(i>30?'…':'')+p.text.slice(Math.max(0,i-30),i+80).replace(/\s+/g,' '):'';
+    return{p,sc,sn};
+  }).filter(Boolean).sort((a,b)=>b.sc-a.sc);
+  $('#list').innerHTML=rows.map(({p,sn})=>`<div class="it ${cur&&cur.id==p.id?'on':''}" data-id="${p.id}"><b>${esc(p.title||'Sans titre')}</b>${sn?'<small>'+hl(esc(sn),terms)+'</small><br>':''}<small>${p.tags.map(t=>'#'+esc(t)).join(' ')} ${new Date(p.updated).toLocaleDateString('fr-FR')}</small></div>`).join('')||'<p style="color:var(--mu)">Aucun résultat</p>';
+}
+function hl(s,terms){return terms.reduce((r,w)=>r.replace(new RegExp('('+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>'),s)}
+$('#q').oninput=list;
+$('#q').onkeydown=e=>{if(e.key=='Enter'){const f=$('.it');if(f)open(f.dataset.id,false)}};
+$('#list').onclick=e=>{const i=e.target.closest('.it');if(i)open(i.dataset.id,false)};
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key=='k'){e.preventDefault();$('#side').classList.add('open');$('#q').focus()}
+  if((e.ctrlKey||e.metaKey)&&e.key=='s'){e.preventDefault();save();list()}
+});
+
+/* ---------- Mode édition ---------- */
+function setEdit(v){edit=v;E.contentEditable=v;$('#title').readOnly=$('#tags').readOnly=!v;document.body.classList.toggle('editing',v);$('#mode').textContent=v?'👁 Lire':'✏️ Modifier';if(!v)unsel()}
+$('#mode').onclick=()=>{save();list();setEdit(!edit)};
+$('#new').onclick=newPage;$('#menu').onclick=()=>$('#side').classList.toggle('open');
+$('#del').onclick=async()=>{if(cur&&confirm('Supprimer cette page ?')){const id=cur.id;pages=pages.filter(p=>p.id!=id);cur=null;st().delete(id);localStorage.removeItem('tutos-last');list();if(pages.length)open(pages[0].id,false);else newPage()}};
+$('#prt').onclick=()=>{save();print()};
+$('#exp').onclick=()=>{save();dl((cur.title||'page')+'.html','<!DOCTYPE html><meta charset=utf-8><title>'+esc(cur.title)+'</title><body style="font:16px/1.6 system-ui;max-width:800px;margin:auto;padding:20px"><h1>'+esc(cur.title)+'</h1>'+cur.html,'text/html')};
+function dl(n,c,t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:t}));a.download=n;a.click()}
+
+/* ---------- Sauvegarde ---------- */
+$('#bk').onclick=()=>{$('#dc').innerHTML='<h3>Sauvegarde</h3><p><button class="pri" id="b1">Exporter toutes les pages (.json)</button></p><p><button id="b2">Importer une sauvegarde</button></p>';dlg.showModal();$('#b1').onclick=()=>{save();dl('mes-tutos-sauvegarde.json',JSON.stringify(pages),'application/json')};$('#b2').onclick=()=>$('#imp').click()};
+$('#imp').onchange=async e=>{try{const a=JSON.parse(await e.target.files[0].text());for(const p of a){const i=pages.findIndex(x=>x.id==p.id);i>=0?pages[i]=p:pages.push(p);st().put(p)}list();dlg.close();alert(a.length+' page(s) importée(s)')}catch{alert('Fichier invalide')}};
+
+/* ---------- Barre d'outils ---------- */
+const sel=(id,opts)=>`<select id="${id}">${opts}</select>`;
+$('#bar').innerHTML=
+ [['↶','undo'],['↷','redo'],['<b>G</b>','bold'],['<i>I</i>','italic'],['<u>S</u>','underline'],['<s>B</s>','strikeThrough'],['⯇','justifyLeft'],['≡','justifyCenter'],['⯈','justifyRight'],['☰','justifyFull'],['• Liste','insertUnorderedList'],['1. Liste','insertOrderedList'],['⇥','indent'],['⇤','outdent'],['🧹','removeFormat']].map(([l,c])=>`<button data-c="${c}">${l}</button>`).join('')+
+ sel('fmt','<option value="">Format</option><option value="P">Paragraphe</option><option value="H1">Titre 1</option><option value="H2">Titre 2</option><option value="H3">Titre 3</option><option value="BLOCKQUOTE">Citation</option>')+
+ sel('fsz','<option value="">Taille</option><option value="2">Petit</option><option value="3">Normal</option><option value="5">Grand</option><option value="6">Très grand</option><option value="7">Énorme</option>')+
+ '<label title="Couleur du texte">A<input type="color" id="c1" value="#d33a3a"></label><label title="Surlignage">🖍<input type="color" id="c2" value="#ffe14d"></label>'+
+ '<button id="lnk">🔗 Lien</button>'+
+ sel('ins','<option value="">＋ Insérer…</option><option value="img">🖼 Image (fichier)</option><option value="imgu">🖼 Image (URL)</option><option value="vid">🎬 Vidéo (URL / YouTube)</option><option value="vidf">🎬 Vidéo (fichier)</option><option value="tbl">▦ Tableau</option><option value="cols">▥ 2 colonnes</option><option value="chk">☑ Checklist</option><option value="ci">ℹ️ Bloc info</option><option value="cw">⚠️ Bloc attention</option><option value="co">✅ Bloc succès</option><option value="code">&lt;/&gt; Code</option><option value="hr">― Séparateur</option><optgroup label="Formes"><option value="s:rect">■ Rectangle</option><option value="s:round">▢ Rectangle arrondi</option><option value="s:circle">● Cercle</option><option value="s:tri">▲ Triangle</option><option value="s:star">★ Étoile</option><option value="s:arrow">➜ Flèche</option><option value="s:dia">◆ Losange</option></optgroup>');
+$('#bar').addEventListener('mousedown',e=>{if(!['SELECT','INPUT','OPTION'].includes(e.target.tagName)&&!e.target.closest('label'))e.preventDefault()});
+document.addEventListener('selectionchange',()=>{const s=getSelection();if(s.rangeCount&&E.contains(s.anchorNode))rng=s.getRangeAt(0).cloneRange()});
+function rest(){E.focus();if(rng){const s=getSelection();s.removeAllRanges();s.addRange(rng)}}
+function cmd(c,v){rest();document.execCommand('styleWithCSS',false,true);document.execCommand(c,false,v);chg()}
+function ins(h){rest();document.execCommand('insertHTML',false,h+'<p><br></p>');chg()}
+$('#bar').onclick=e=>{const b=e.target.closest('[data-c]');if(b)cmd(b.dataset.c)};
+$('#fmt').onchange=e=>{if(e.target.value)cmd('formatBlock',e.target.value);e.target.value=''};
+$('#fsz').onchange=e=>{if(e.target.value)cmd('fontSize',e.target.value);e.target.value=''};
+$('#c1').oninput=e=>cmd('foreColor',e.target.value);
+$('#c2').oninput=e=>cmd('hiliteColor',e.target.value);
+$('#lnk').onclick=()=>{const u=prompt('Adresse du lien (https://…)','https://');if(u)cmd('createLink',u)};
+
+/* ---------- Insertions ---------- */
+const pick=a=>new Promise(r=>{const i=document.createElement('input');i.type='file';i.accept=a;i.onchange=()=>r(i.files[0]);i.click()});
+const rd=f=>new Promise(r=>{const x=new FileReader();x.onload=()=>r(x.result);x.readAsDataURL(f)});
+async function imgData(f){
+  if(/gif|svg/.test(f.type))return rd(f);
+  const u=URL.createObjectURL(f),im=new Image();await new Promise(r=>{im.onload=r;im.src=u});
+  const k=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement('canvas');
+  c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);
+  return c.toDataURL(f.type=='image/png'?'image/png':'image/jpeg',.85);
+}
+const O=(t,inner,w)=>`<div class="obj" data-t="${t}" data-al="c" style="width:${w||60}%" contenteditable="false">${inner}</div>`;
+function embed(u){
+  let m=u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);if(m)return`<div class="v"><iframe src="https://www.youtube.com/embed/${m[1]}" allowfullscreen></iframe></div>`;
+  m=u.match(/vimeo\.com\/(\d+)/);if(m)return`<div class="v"><iframe src="https://player.vimeo.com/video/${m[1]}" allowfullscreen></iframe></div>`;
+  return`<div class="v"><video controls src="${esc(u)}"></video></div>`;
+}
+const SH={rect:'<rect x="5" y="15" width="90" height="70"/>',round:'<rect x="5" y="15" width="90" height="70" rx="18"/>',circle:'<circle cx="50" cy="50" r="45"/>',tri:'<polygon points="50,8 95,90 5,90"/>',star:'<polygon points="50,5 61,38 96,38 68,58 79,92 50,71 21,92 32,58 4,38 39,38"/>',arrow:'<polygon points="5,35 60,35 60,12 96,50 60,88 60,65 5,65"/>',dia:'<polygon points="50,4 96,50 50,96 4,50"/>'};
+const CL={ci:'info',cw:'warn',co:'ok'};
+$('#ins').onchange=async e=>{
+  const v=e.target.value;e.target.value='';if(!v)return;
+  if(v=='img'||v=='vidf'){const f=await pick(v=='img'?'image/*':'video/*');if(!f)return;
+    if(v=='vidf'&&f.size>40e6&&!confirm('Vidéo lourde (>40 Mo) : la page sera lente. Continuer ?'))return;
+    const d=v=='img'?await imgData(f):await rd(f);ins(O(v=='img'?'img':'vid',v=='img'?`<img src="${d}">`:`<div class="v"><video controls src="${d}"></video></div>`));}
+  else if(v=='imgu'){const u=prompt('URL de l\'image');if(u)ins(O('img',`<img src="${esc(u)}">`))}
+  else if(v=='vid'){const u=prompt('URL de la vidéo (YouTube, Vimeo ou .mp4)');if(u)ins(O('vid',embed(u),80))}
+  else if(v=='tbl')ins('<table>'+'<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>'.repeat(3)+'</table>');
+  else if(v=='cols')ins('<div class="cols"><div>Colonne 1</div><div>Colonne 2</div></div>');
+  else if(v=='chk')ins('<ul class="check"><li><input type="checkbox" contenteditable="false">&nbsp;Tâche</li></ul>');
+  else if(CL[v])ins(`<div class="callout ${CL[v]}">Texte…</div>`);
+  else if(v=='code')ins('<pre>code…</pre>');
+  else if(v=='hr')ins('<hr>');
+  else if(v.startsWith('s:'))ins(O('shape',`<svg viewBox="0 0 100 100" fill="currentColor">${SH[v.slice(2)]}</svg>`,25).replace('contenteditable','style="color:'+S.a+'" contenteditable'));
+};
+E.addEventListener('keydown',e=>{if(e.key=='Enter')setTimeout(()=>{const n=getSelection().anchorNode,li=n&&(n.nodeType==1?n:n.parentNode).closest('ul.check li');if(li&&!li.querySelector('input'))li.insertAdjacentHTML('afterbegin','<input type="checkbox" contenteditable="false">&nbsp;')})});
+E.addEventListener('paste',async e=>{
+  if(!edit)return;e.preventDefault();
+  const f=[...e.clipboardData.files].find(x=>x.type.startsWith('image/'));
+  if(f){ins(O('img',`<img src="${await imgData(f)}">`));return}
+  document.execCommand('insertText',false,e.clipboardData.getData('text/plain'));
+});
+
+/* ---------- Objets (taille, alignement, lien, couleur) ---------- */
+function unsel(){if(obj)obj.classList.remove('sel');obj=null;$('#ob').style.display='none'}
+E.addEventListener('click',e=>{
+  if(!edit)return;const o=e.target.closest('.obj');if(!o){unsel();return}
+  unsel();obj=o;o.classList.add('sel');const t=o.dataset.t;
+  $('#ob').style.display='flex';
+  $('#ob').innerHTML=`<b>${t=='shape'?'Forme':t=='img'?'Image':'Vidéo'}</b> Taille <input type="range" min="10" max="100" value="${parseInt(o.style.width)||60}" id="ow">`+
+   [['⯇','l'],['≡','c'],['⯈','r'],['◧ flotte','fl'],['flotte ◨','fr']].map(([l,a])=>`<button data-a="${a}">${l}</button>`).join('')+
+   (t=='shape'?`<input type="color" id="oc" value="${S.a}">`:'')+(t=='img'?'<button id="ol">🔗 Lien</button>':'')+'<button id="od">🗑 Supprimer</button><button id="ox">✕</button>';
+  $('#ow').oninput=ev=>{o.style.width=ev.target.value+'%';chg()};
+  $('#ob').querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{o.dataset.al=b.dataset.a;chg()});
+  if($('#oc'))$('#oc').oninput=ev=>{o.style.color=ev.target.value;chg()};
+  if($('#ol'))$('#ol').onclick=()=>{const im=o.querySelector('img'),a=im.parentNode.tagName=='A'?im.parentNode:null;
+    const u=prompt('Adresse du lien (vide = retirer)',a?a.href:'https://');
+    if(a){a.replaceWith(im)}if(u){const n=document.createElement('a');n.href=u;n.target='_blank';im.replaceWith(n);n.appendChild(im)}chg()};
+  $('#od').onclick=()=>{o.remove();unsel();chg()};$('#ox').onclick=unsel;
+});
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+init();
+</script>
+</body>
+</html>
